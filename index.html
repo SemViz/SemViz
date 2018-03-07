@@ -1,1 +1,12 @@
-allo
+<html>
+
+<script>
+fetch("https://raw.githubusercontent.com/assemblee-virtuelle/PWA-ConfigSemViz/master/config.json").then(function(response) {
+  return response.json();
+}).then(function(data) {
+  console.log(data);
+}).catch(function(e) {
+  console.log("config Load Fail",e);
+});
+</script>
+<html>
