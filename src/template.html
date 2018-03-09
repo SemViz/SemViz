@@ -6,6 +6,7 @@
 const currentDocument = document.currentScript.ownerDocument;
 class SemVizBaseTemplate extends HTMLElement {
   constructor() {
+    console.log('Component Script');
     // If you define a constructor, always call super() first as it is required by the CE spec.
     super();
 
@@ -34,5 +35,5 @@ class SemVizBaseTemplate extends HTMLElement {
  }
 }
 
-customElements.define('semViz-base-template', TestComponent);
+customElements.define('semViz-base-template', SemVizBaseTemplate);
 </script>

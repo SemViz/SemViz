@@ -314,77 +314,45 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var urlParamsString = window.location.search;
 var urlParams = _qs2.default.parse(urlParamsString, { ignoreQueryPrefix: true });
-console.log(urlParams.configFile);
-fetch(urlParams.configFile).then(function (response) {
-  console.log(response);
-  return response.json();
-}).then(function (data) {
-  console.log(data);
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
 
-  try {
-    for (var _iterator = data.injection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var injection = _step.value;
-
-      //console.log(injection);
-      var doms = document.querySelectorAll(injection.selector);
-      //console.log(doms);
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = doms[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var dom = _step2.value;
-
-          console.log(dom);
-          var importFile = document.createElement('link');
-          //importFile.setAttribut('rel','import');
-          // importFile.setAttribut('href',injection.componentUrl);
-          importFile.rel = 'import';
-          importFile.href = injection.componentUrl;
-          //let node = document.importNode(injection.componentUrl, true);
-          //dom.appendChild(importFile);
-          document.head.appendChild(importFile);
-
-          var domComponent = document.createElement(injection.componentTag);
-          dom.appendChild(domComponent);
-          //dom.innerHTML = injection.html
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
-}).catch(function (e) {
-  console.log("config Load Fail", e);
-});
+var importTemplateFile = document.createElement('link');
+importTemplateFile.rel = 'import';
+importTemplateFile.href = "https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
+document.head.appendChild(importTemplateFile);
+var domBody = document.querySelector('body');
+console.log(domBody);
+var domTemplate = document.createElement('semViz-base-template');
+domBody.appendChild(domTemplate);
+//
+// console.log(urlParams.configFile);
+// fetch(urlParams.configFile).then(function(response) {
+//   console.log(response);
+//   return response.json();
+// }).then(function(data) {
+//   console.log(data);
+//   for (let injection of data.injection) {
+//     //console.log(injection);
+//     let doms = document.querySelectorAll(injection.selector);
+//     //console.log(doms);
+//     for (let dom of doms) {
+//       console.log(dom);
+//       let importFile = document.createElement('link');
+//       //importFile.setAttribut('rel','import');
+//       // importFile.setAttribut('href',injection.componentUrl);
+//       importFile.rel='import';
+//       importFile.href=injection.componentUrl;
+//       //let node = document.importNode(injection.componentUrl, true);
+//       //dom.appendChild(importFile);
+//       document.head.appendChild(importFile);
+//
+//       let domComponent = document.createElement(injection.componentTag);
+//       dom.appendChild(domComponent);
+//       //dom.innerHTML = injection.html
+//     }
+//   }
+// }).catch(function(e) {
+//   console.log("config Load Fail", e);
+// });
 
 /***/ }),
 /* 3 */
