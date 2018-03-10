@@ -356,8 +356,8 @@ fetch(urlParams.configFile).then(function (response) {
 
   var importTemplateFile = document.createElement('link');
   importTemplateFile.rel = 'import';
-  //importTemplateFile.href="https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
-  importTemplateFile.href = "../src/template.html";
+  importTemplateFile.href = "https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
+  //importTemplateFile.href="../src/template.html";
   document.head.appendChild(importTemplateFile);
   var domBody = document.querySelector('body');
   console.log(domBody);
