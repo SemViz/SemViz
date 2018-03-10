@@ -16,13 +16,27 @@ fetch(urlParams.configFile).then(function(response) {
 
   let importTemplateFile = document.createElement('link');
   importTemplateFile.rel='import';
-  importTemplateFile.href="https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
-  //importTemplateFile.href="../src/template.html";
+  //importTemplateFile.href="https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
+  importTemplateFile.href="../src/template.html";
+
+  window.customElements.whenDefined('semviz-base-template').then(() => {
+    console.log('ready!');
+  });
   document.head.appendChild(importTemplateFile);
+
+  console.log('SEMVIZ customElements',window.customElements);
+
   let domBody = document.querySelector('body');
-  console.log(domBody);
-  let domTemplate = document.createElement('semviz-base-template', 'coucou');
-  domBody.appendChild(domTemplate);
+
+//  let domTemplate = document.createElement('semviz-base-template', 'coucou');
+//  console.log(domTemplate);
+//  domTemplate.setBusMessage('ALLO');
+// let Template = customElements.get('semviz-base-template');
+// console.log('elmt',Template);
+// let domTemplate = new Template();
+//
+//
+//   domBody.appendChild(domTemplate);
 
   // for (let injection of data.injection) {
   //   //console.log(injection);

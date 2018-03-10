@@ -326,26 +326,22 @@ module.exports = {
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcomponents_webcomponentsjs__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcomponents_webcomponentsjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__webcomponents_webcomponentsjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_qs__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_qs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_qs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_postal__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_postal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_postal__);
 
 
-__webpack_require__(4);
 
-var _qs = __webpack_require__(6);
-
-var _qs2 = _interopRequireDefault(_qs);
-
-var _postal = __webpack_require__(9);
-
-var _postal2 = _interopRequireDefault(_postal);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-console.log(_postal2.default);
-var urlParamsString = window.location.search;
-var urlParams = _qs2.default.parse(urlParamsString, { ignoreQueryPrefix: true });
+console.log(__WEBPACK_IMPORTED_MODULE_2_postal___default.a);
+let urlParamsString = window.location.search;
+var urlParams = __WEBPACK_IMPORTED_MODULE_1_qs___default.a.parse(urlParamsString, { ignoreQueryPrefix: true });
 
 console.log(urlParams.configFile);
 fetch(urlParams.configFile).then(function (response) {
@@ -354,15 +350,29 @@ fetch(urlParams.configFile).then(function (response) {
 }).then(function (data) {
   console.log(data);
 
-  var importTemplateFile = document.createElement('link');
+  let importTemplateFile = document.createElement('link');
   importTemplateFile.rel = 'import';
-  importTemplateFile.href = "https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
-  //importTemplateFile.href="../src/template.html";
+  //importTemplateFile.href="https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
+  importTemplateFile.href = "../src/template.html";
+
+  window.customElements.whenDefined('semviz-base-template').then(() => {
+    console.log('ready!');
+  });
   document.head.appendChild(importTemplateFile);
-  var domBody = document.querySelector('body');
-  console.log(domBody);
-  var domTemplate = document.createElement('semviz-base-template');
-  domBody.appendChild(domTemplate);
+
+  console.log('SEMVIZ customElements', window.customElements);
+
+  let domBody = document.querySelector('body');
+
+  //  let domTemplate = document.createElement('semviz-base-template', 'coucou');
+  //  console.log(domTemplate);
+  //  domTemplate.setBusMessage('ALLO');
+  // let Template = customElements.get('semviz-base-template');
+  // console.log('elmt',Template);
+  // let domTemplate = new Template();
+  //
+  //
+  //   domBody.appendChild(domTemplate);
 
   // for (let injection of data.injection) {
   //   //console.log(injection);

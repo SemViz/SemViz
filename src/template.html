@@ -16,6 +16,10 @@ class SemVizBaseTemplate extends HTMLElement {
     console.log('postal on template',postal);
   }
 
+  setBusMessage(bus){
+    console.log('bus',bus);
+  }
+
   connectedCallback() {
    const shadowRoot = this.attachShadow({mode: 'open'});
    const template = document.querySelector('#semVizBaseTemplate-template');
@@ -24,5 +28,6 @@ class SemVizBaseTemplate extends HTMLElement {
  }
 }
 
-customElements.define('semviz-base-template', SemVizBaseTemplate);
+window.customElements.define('semviz-base-template', SemVizBaseTemplate);
+  console.log('TEMPLATE customElements',window.customElements);
 </script>
