@@ -353,6 +353,7 @@ fetch(urlParams.configFile).then(function (response) {
   let importTemplateFile = document.createElement('link');
   importTemplateFile.rel = 'import';
   importTemplateFile.href = "https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
+  importTemplateFile.id = 'semviz-base-template';
   //importTemplateFile.href="../src/template.html";
 
   window.customElements.whenDefined('semviz-base-template').then(() => {
