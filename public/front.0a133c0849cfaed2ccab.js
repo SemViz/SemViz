@@ -341,7 +341,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 console.log(__WEBPACK_IMPORTED_MODULE_2_postal___default.a);
 let urlParamsString = window.location.search;
-var urlParams = __WEBPACK_IMPORTED_MODULE_1_qs___default.a.parse(urlParamsString, { ignoreQueryPrefix: true });
+var urlParams = __WEBPACK_IMPORTED_MODULE_1_qs___default.a.parse(urlParamsString, {
+  ignoreQueryPrefix: true
+});
 
 console.log(urlParams.configFile);
 fetch(urlParams.configFile).then(function (response) {
@@ -350,56 +352,49 @@ fetch(urlParams.configFile).then(function (response) {
 }).then(function (data) {
   console.log(data);
 
+  window.customElements.whenDefined('semviz-base-template').then(() => {
+    //console.log('ready!');
+    let Template = customElements.get('semviz-base-template');
+    //console.log('elmt',Template);
+    let domTemplate = new Template(__WEBPACK_IMPORTED_MODULE_2_postal___default.a);
+    let domBody = document.querySelector('body');
+    domBody.appendChild(domTemplate);
+
+    for (let injection of data.injection) {
+      window.customElements.whenDefined(injection.componentTag).then(() => {
+        //console.log('ready!');
+        let Component = customElements.get(injection.componentTag);
+
+        let shadowDomTemplate = document.querySelector('semviz-base-template');
+        //console.log(shadowDomTemplate);
+        let doms = shadowDomTemplate.shadowRoot.querySelectorAll(injection.selector);
+        console.log(doms);
+        for (let dom of doms) {
+          //console.log('elmt',Template);
+          let domComponent = new Component(__WEBPACK_IMPORTED_MODULE_2_postal___default.a);
+          dom.appendChild(domComponent);
+        }
+      });
+    }
+
+    for (let injection of data.injection) {
+      let importFile = document.createElement('link');
+      importFile.rel = 'import';
+      importFile.href = injection.componentUrl;
+      importTemplateFile.id = injection.componentTag;
+      document.head.appendChild(importFile);
+    }
+  });
+
   let importTemplateFile = document.createElement('link');
   importTemplateFile.rel = 'import';
   importTemplateFile.href = "https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
   importTemplateFile.id = 'semviz-base-template';
   //importTemplateFile.href="../src/template.html";
-
-  window.customElements.whenDefined('semviz-base-template').then(() => {
-    console.log('ready!');
-    let Template = customElements.get('semviz-base-template');
-    console.log('elmt', Template);
-    let domTemplate = new Template('enfin');
-    let domBody = document.querySelector('body');
-    domBody.appendChild(domTemplate);
-  });
   document.head.appendChild(importTemplateFile);
 
-  console.log('SEMVIZ customElements', window.customElements);
+  //console.log('SEMVIZ customElements',window.customElements);
 
-  //  let domTemplate = document.createElement('semviz-base-template', 'coucou');
-  //  console.log(domTemplate);
-  //  domTemplate.setBusMessage('ALLO');
-  // let Template = customElements.get('semviz-base-template');
-  // console.log('elmt',Template);
-  // let domTemplate = new Template();
-  //
-  //
-  //   domBody.appendChild(domTemplate);
-
-  // for (let injection of data.injection) {
-  //   //console.log(injection);
-  //   let shadowDomTemplate=document.querySelector('semviz-base-template');
-  //   console.log(shadowDomTemplate);
-  //   let doms = shadowDomTemplate.shadowRoot.querySelectorAll(injection.selector);
-  //   console.log(doms);
-  //   for (let dom of doms) {
-  //     console.log(dom);
-  //     let importFile = document.createElement('link');
-  //     //importFile.setAttribut('rel','import');
-  //     // importFile.setAttribut('href',injection.componentUrl);
-  //     importFile.rel='import';
-  //     importFile.href=injection.componentUrl;
-  //     //let node = document.importNode(injection.componentUrl, true);
-  //     //dom.appendChild(importFile);
-  //     document.head.appendChild(importFile);
-  //
-  //     let domComponent = document.createElement(injection.componentTag);
-  //     dom.appendChild(domComponent);
-  //     //dom.innerHTML = injection.html
-  //   }
-  // }
 }).catch(function (e) {
   console.log("config Load Fail", e);
 });

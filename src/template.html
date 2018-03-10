@@ -5,30 +5,20 @@
 <script>
 
 class SemVizBaseTemplate extends HTMLElement {
-  //console.log('ALLO');
-  //import postal from 'postal';
-  //console.log(postal);
+
   constructor(postal) {
-    console.log('ALLO');
-    // If you define a constructor, always call super() first as it is required by the CE spec.
     super();
     console.log('postal on template',postal);
   }
 
-  setBusMessage(bus){
-    console.log('bus',bus);
-  }
-
   connectedCallback() {
    const shadowRoot = this.attachShadow({mode: 'open'});
-   //const template = document.querySelector('#semVizBaseTemplate-template');
    const template = document.querySelector('#semviz-base-template').import.querySelector('#semVizBaseTemplate-template');
-   console.log(document,document.querySelector('#div01'));
    const instance = template.content.cloneNode(true);
    shadowRoot.appendChild(instance);
  }
 }
 
 window.customElements.define('semviz-base-template', SemVizBaseTemplate);
-  console.log('TEMPLATE customElements',window.customElements);
+
 </script>
