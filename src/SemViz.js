@@ -21,7 +21,7 @@ fetch(urlParams.configFile).then(function(response) {
   document.head.appendChild(importTemplateFile);
   let domBody = document.querySelector('body');
   console.log(domBody);
-  let domTemplate = document.createElement('semviz-base-template');
+  let domTemplate = document.createElement('semviz-base-template', 'coucou');
   domBody.appendChild(domTemplate);
 
   // for (let injection of data.injection) {
