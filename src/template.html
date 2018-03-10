@@ -21,7 +21,8 @@ class SemVizBaseTemplate extends HTMLElement {
 
   connectedCallback() {
    const shadowRoot = this.attachShadow({mode: 'open'});
-   const template = document.querySelector('#semVizBaseTemplate-template');
+   //const template = document.querySelector('#semVizBaseTemplate-template');
+   const template = document.querySelector('link[rel=import]').import.querySelector('#semVizBaseTemplate-template');
    console.log(document,document.querySelector('#div01'));
    const instance = template.content.cloneNode(true);
    shadowRoot.appendChild(instance);
