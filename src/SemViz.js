@@ -16,10 +16,6 @@ fetch(urlParams.configFile).then(function(response) {
 }).then(function(data) {
   console.log(data);
 
-
-
-
-
   window.customElements.whenDefined(data.template.componentTag).then(() => {
     //console.log('ready!');
     let Template = customElements.get(data.template.componentTag);
