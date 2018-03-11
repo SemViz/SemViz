@@ -20,9 +20,9 @@ fetch(urlParams.configFile).then(function(response) {
 
 
 
-  window.customElements.whenDefined('semviz-base-template').then(() => {
+  window.customElements.whenDefined(data.template.componentTag).then(() => {
     //console.log('ready!');
-    let Template = customElements.get('semviz-base-template');
+    let Template = customElements.get(data.template.componentTag);
     //console.log('elmt',Template);
     let domTemplate = new Template(postal);
     let domBody = document.querySelector('body');
@@ -32,8 +32,7 @@ fetch(urlParams.configFile).then(function(response) {
       window.customElements.whenDefined(injection.componentTag).then(() => {
         //console.log('ready!');
         let Component = customElements.get(injection.componentTag);
-
-        let shadowDomTemplate = document.querySelector('semviz-base-template');
+        let shadowDomTemplate = document.querySelector(data.template.componentTag);
         //console.log(shadowDomTemplate);
         let doms = shadowDomTemplate.shadowRoot.querySelectorAll(injection.selector);
         console.log(doms);
@@ -41,25 +40,25 @@ fetch(urlParams.configFile).then(function(response) {
           //console.log('elmt',Template);
           let domComponent = new Component(postal);
           dom.appendChild(domComponent);
-
         }
-
       });
     }
 
+    let importSources={};
     for (let injection of data.injection) {
-        let importFile = document.createElement('link');
-        importFile.rel = 'import';
-        importFile.href = injection.componentUrl;
-        importTemplateFile.id = injection.componentTag;
-        document.head.appendChild(importFile);
+        if(importSources[injection.componentTag]==undefined){
+          let importFile = document.createElement('link');
+          importFile.rel = 'import';
+          importFile.href = injection.componentUrl;
+          document.head.appendChild(importFile);
+          importSources[injection.componentTag]=injection.componentUrl;
+        }
     }
   });
 
   let importTemplateFile = document.createElement('link');
   importTemplateFile.rel = 'import';
-  importTemplateFile.href = "https://raw.githubusercontent.com/assemblee-virtuelle/SemViz/master/src/template.html";
-  importTemplateFile.id = 'semviz-base-template';
+  importTemplateFile.href = data.template.componentUrl;
   //importTemplateFile.href="../src/template.html";
   document.head.appendChild(importTemplateFile);
 
