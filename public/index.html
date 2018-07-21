@@ -21,12 +21,11 @@
     <semantic-form-sv slot="slot3" id="semanticForm"></semantic-form-sv>
   </semviz-base-template>
 
-  <http-fetch id="alternatives-get-many" url="http://semantic-bus.org/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}'
-    url-read-one="http://route?id={$.id}" method="GET">
+  <http-fetch id="alternatives-get-many" url="https://semantic-bus.org/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" method="GET" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}' >
   </http-fetch>
-  <http-fetch id="alternatives-get-one" url="http://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET">
+  <http-fetch id="alternatives-get-one" url="https://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET">
   </http-fetch>
-  <http-fetch id="taxonomy-get-many" url="http://semantic-bus.org/data/api/TaxonomiePWA" method="GET">
+  <http-fetch id="taxonomy-get-many" url="https://semantic-bus.org/data/api/TaxonomiePWA" method="GET">
   </http-fetch>
 
   <navigo-router id="router">
