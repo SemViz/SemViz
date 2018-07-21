@@ -8,10 +8,11 @@
       <script src="./PostalMessaging/PostalMessaging.js" type="module"></script>
       <script src="./httpFetch/httpFetch.js" type="module"></script>
       <script src="./navigoRouter/navigoRouter.js" type="module"></script>
-      <web-component-link url="https://raw.githack.com/SemViz/SemViz-Templates/master/public/template/" main="index.html" tag="semviz-base-template" class="SemVizBaseTemplate"></web-component-link>
-      <web-component-link url="https://raw.githack.com/SemViz/SemViz-TestComponent/master/public/skosTreeSV/" main="index.html" tag="skos-tree-sv" class="SkosTreeSV"></web-component-link>
-      <web-component-link url="https://raw.githack.com/SemViz/SemViz-TestComponent/master/public/semanticTableSV/" main="index.html" tag="semantic-table-sv" class="SemanticTableSV"></web-component-link>
-      <web-component-link url="https://raw.githack.com/SemViz/SemViz-TestComponent/master/public/semanticFormSV/" main="index.html" tag="semantic-form-sv" class="SemanticFormSV"></web-component-link>
+      <web-component-link url="http://localhost:8081/template/" main="index.html" tag="semviz-base-template" class="SemVizBaseTemplate"></web-component-link>
+      <web-component-link url="http://localhost:8082/skosTreeSV/" main="index.html" tag="skos-tree-sv" class="SkosTreeSV"></web-component-link>
+      <web-component-link url="http://localhost:8082/semanticTableSV/" main="index.html" tag="semantic-table-sv" class="SemanticTableSV"></web-component-link>
+      <web-component-link url="http://localhost:8082/semanticFormSV/" main="index.html" tag="semantic-form-sv" class="SemanticFormSV"></web-component-link>
+
 </head>
 
 <body>
@@ -21,7 +22,7 @@
     <semantic-form-sv slot="slot3" id="semanticForm"></semantic-form-sv>
   </semviz-base-template>
 
-  <http-fetch id="alternatives-get-many" url="http://semantic-bus.org/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}'
+  <http-fetch id="alternatives-get-many" url="http://localhost:8080/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}'
     url-read-one="http://route?id={$.id}" method="GET">
   </http-fetch>
   <http-fetch id="alternatives-get-one" url="http://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET">
@@ -37,24 +38,28 @@
   <postal-messaging source="#skosTree" target="#alternatives-get-many">
     <message source="tree/item/select" target="fetch"></message>
   </postal-messaging>
+  <!--<web-component-messaging source="#semanticTable" target="#alternatives-get-one">
+    <message source="table/item/select" target="fetch"></message>
+  </web-component-messaging>-->
   <postal-messaging source="#semanticTable" target="#router">
     <message source="table/item/select" target="formRequest"></message>
-  </postal-messaging>
-
-  <postal-messaging source="#router" target="#template">
-    <message source="form" target="form"></message>
-    <message source="search" target="search"></message>
   </postal-messaging>
   <postal-messaging source="#router" target="#alternatives-get-one">
     <message source="form" target="fetch"></message>
   </postal-messaging>
+  <postal-messaging source="#router" target="#template">
+    <message source="form" target="form"></message>
+  </postal-messaging>
+  <postal-messaging source="#router" target="#template">
+    <message source="search" target="search"></message>
+  </postal-messaging>
+
   <postal-messaging source="#router" target="#alternatives-get-many">
     <message source="search" target="fetch"></message>
   </postal-messaging>
   <postal-messaging source="#router" target="#taxonomy-get-many">
     <message source="search" target="fetch"></message>
   </postal-messaging>
-
   <postal-messaging source="#alternatives-get-many" target="#semanticTable">
     <message source="response" target="table/items/set"></message>
     <message source="loading" target="table/items/loading"></message>
