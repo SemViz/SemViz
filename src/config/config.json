@@ -1,0 +1,21 @@
+{
+  "template": {
+    "componentUrl": "http://localhost:8081/template/index.html",
+    "componentTag": "semviz-base-template"
+  },
+  "injection": [{
+      "selector": "#div1",
+      "componentUrl": "http://localhost:8082/testComponent/index.html",
+      "componentTag": "test-component"
+    }, {
+      "selector": "#div2",
+      "componentUrl": "http://localhost:8082/testComponentContainer/index.html",
+      "componentTag": "test-component-container"
+    },{
+      "selector": "#div3",
+      "componentUrl": "http://localhost:8082/skosTreeSV/index.html",
+      "componentTag": "skos-tree-sv"
+    }
+
+  ]
+}

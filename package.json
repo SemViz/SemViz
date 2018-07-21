@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "build": "webpack",
-    "prebuild": "rimraf public"
+    "prebuild": "rimraf public",
+    "start": "http-server -p 8083",
+    "prestart": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -21,13 +23,18 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
+    "copy-webpack-plugin": "^4.5.1",
     "html-webpack-plugin": "^2.30.1",
+    "http-server": "^0.11.1",
     "qs": "^6.5.1",
     "rimraf": "^2.6.2",
     "webpack": "^3.11.0"
   },
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^1.1.0",
-    "postal": "^2.0.5"
+    "dot-prop": "^4.2.0",
+    "navigo": "^7.1.2",
+    "postal": "^2.0.5",
+    "query-selector-shadow-dom": "0.0.7"
   }
 }
