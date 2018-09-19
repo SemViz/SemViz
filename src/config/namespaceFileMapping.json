@@ -1,0 +1,53 @@
+[{
+    "namespace": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "file": "http://www.w3.org/2003/01/geo/wgs84_pos"
+  },
+  {
+    "namespace": "http://xmlns.com/foaf/0.1/",
+    "file": "http://xmlns.com/foaf/spec/index.rdf"
+  },
+  {
+    "namespace": "http://purl.org/dc/terms/",
+    "file": "http://purl.org/dc/terms/"
+  },
+  {
+    "namespace": "http://purl.org/dc/elements/1.1/",
+    "file": "http://purl.org/dc/elements/1.1/"
+  },
+  {
+    "namespace": "http://schema.org/",
+    "file": "http://www.w3.org/2012/pyRdfa/extract?uri=http%3A%2F%2Fschema.org%2Fdocs%2Fschema_org_rdfa.html&format=n3"
+  },
+  {
+    "namespace": "http://www.w3.org/2002/07/owl#",
+    "file": "http://www.w3.org/2002/07/owl"
+  },
+  {
+    "namespace": "http://www.w3.org/2004/02/skos/core#",
+    "file": "http://www.w3.org/2009/08/skos-reference/skos.rdf"
+  },
+  {
+    "namespace": "http://dbpedia.org/ontology/",
+    "file": "http://dbpedia.org/data3/.rdf"
+  },
+  {
+    "namespace": "http://dbpedia.org/resource/",
+    "file": "http://dbpedia.org/data/.rdf"
+  },
+  {
+    "namespace": "http://dbpedia.org/resource/Category",
+    "file": "http://dbpedia.org/data/Category.rdf"
+  },
+  {
+    "namespace": "www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "file": "www.w3.org/1999/02/22-rdf-syntax-ns"
+  },
+  {
+    "namespace": "www.w3.org/2000/01/rdf-schema#",
+    "file": "www.w3.org/2000/01/rdf-schema"
+  },
+  {
+    "namespace": "http://www.w3.org/2001/XMLSchema#",
+    "file": "https://www.w3.org/2009/XMLSchema/XMLSchema.xsd"
+  }
+]

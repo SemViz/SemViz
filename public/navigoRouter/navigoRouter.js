@@ -65,122 +65,272 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_navigo__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_navigo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_navigo__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_dot_prop__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_dot_prop___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_dot_prop__);
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-class WebComponentMessaging extends HTMLElement {
-  constructor() {
-    super();
-    this.subscriptions = [];
-  }
-  connectedCallback() {
-    this.attributesValues = {};
-    for (let attribute of this.attributes) {
-      this.attributesValues[attribute.name] = attribute.nodeValue;
-    }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    let routes = this.querySelectorAll('route');
-    //console.log(messages);
-    this.routes = routes.map(r => {
-      return {
-        inputMessage: r.attributes.getNamedItem('input-message').nodeValue,
-        outputMessage: r.attributes.getNamedItem('output-message').nodeValue,
-        url: r.attributes.getNamedItem('url').nodeValue,
-        urlBuild: r.attributes.getNamedItem('url-build') == undefined ? undefined : r.attributes.getNamedItem('url-build').nodeValue,
-        paramBinding: {}
-      };
-    });
+var _navigo = __webpack_require__(1);
 
-    var root = null;
-    var useHash = true; // Defaults to: false
-    var hash = '#'; // Defaults to: '#'
-    this.router = new __WEBPACK_IMPORTED_MODULE_0_navigo___default.a(root, useHash, hash);
+var _navigo2 = _interopRequireDefault(_navigo);
 
-    for (let route of this.routes) {
+var _dotProp = __webpack_require__(2);
 
-      let url = route.url;
-      const regex = /{(\$.*?)}/g;
-      let elementsRaw = url.match(regex);
-      if (elementsRaw != null) {
-        for (let match of elementsRaw) {
+var _dotProp2 = _interopRequireDefault(_dotProp);
 
-          let ObjectKey = match.slice(3, -1);
-          let navigoParam = ObjectKey.replace(/@/g, '');
-          route.paramBinding[navigoParam] = ObjectKey;
-          //console.log(match,ObjectKey,dotProp.get(paramObject, ObjectKey));
-          //let ObjectValue=dotProp.get(data, ObjectKey)
-          url = url.replace(match, ':' + navigoParam);
-        }
-      }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-      // let encoded =encodeURIComponent(route.url);
-      // console.log(encoded);
-      // encoded=encoded.replace('%2F','/');
-      // encoded=encoded.replace('%3A',':');
-      // console.log(encoded);
-      this.router.on(url, (params, query) => {
-        console.log('route', route.url, params, query);
-        let objectParam = {};
-        for (let param in params) {
-          let realParam = route.paramBinding[param];
-          objectParam[realParam] = params[param];
-        }
-        console.log(objectParam);
-        this.publish(route.outputMessage, objectParam);
-      }).resolve();
-    }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var WebComponentMessaging = function (_HTMLElement) {
+  _inherits(WebComponentMessaging, _HTMLElement);
+
+  function WebComponentMessaging() {
+    _classCallCheck(this, WebComponentMessaging);
+
+    var _this = _possibleConstructorReturn(this, (WebComponentMessaging.__proto__ || Object.getPrototypeOf(WebComponentMessaging)).call(this));
+
+    _this.subscriptions = [];
+
+    return _this;
   }
 
-  setChannel(channel) {
-    //console.log('ALLO');
-    this.channel = channel;
-    for (let route of this.routes) {
-      this.subscriptions.push(channel.subscribe(route.inputMessage, (data, envelope) => {
-        let url = route.url;
-        const regex = /{(\$.*?)}/g;
-        let elementsRaw = url.match(regex);
-        if (elementsRaw != null) {
-          for (let match of elementsRaw) {
-            let ObjectKey = match.slice(3, -1);
+  _createClass(WebComponentMessaging, [{
+    key: 'connectedCallback',
+    value: function connectedCallback() {
+      var _this2 = this;
 
-            //console.log(match,ObjectKey,dotProp.get(paramObject, ObjectKey));
-            //let ObjectValue=dotProp.get(data, ObjectKey)
-            url = url.replace(match, encodeURIComponent(__WEBPACK_IMPORTED_MODULE_1_dot_prop___default.a.get(data, ObjectKey)));
+      this.attributesValues = {};
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.attributes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var attribute = _step.value;
+
+          this.attributesValues[attribute.name] = attribute.nodeValue;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
           }
         }
-        console.log('ROUTE ASK', url);
-        this.router.navigate(url);
-      }));
-    }
-  }
-  publish(message, data) {
+      }
 
-    let count = 0;
-    let checkExist = setInterval(() => {
-      if (this.channel != undefined) {
-        console.log('CRUD message', message);
-        clearInterval(checkExist);
-        this.channel.publish(message, data);
-      } else {
-        count++;
-        if (count > 100) {
-          clearInterval(checkExist);
-          console.warn(`http channel doesn't exist after 10s`);
+      var routes = this.querySelectorAll('route');
+      //console.log(messages);
+      this.routes = routes.map(function (r) {
+        return {
+          inputMessage: r.attributes.getNamedItem('input-message').nodeValue,
+          outputMessage: r.attributes.getNamedItem('output-message').nodeValue,
+          url: r.attributes.getNamedItem('url').nodeValue,
+          urlBuild: r.attributes.getNamedItem('url-build') == undefined ? undefined : r.attributes.getNamedItem('url-build').nodeValue,
+          paramBinding: {}
+        };
+      });
+
+      var root = null;
+      var useHash = true; // Defaults to: false
+      var hash = '#'; // Defaults to: '#'
+      this.router = new _navigo2.default(root, useHash, hash);
+
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        var _loop = function _loop() {
+          var route = _step2.value;
+
+
+          var url = route.url;
+          var regex = /{(\$.*?)}/g;
+          var elementsRaw = url.match(regex);
+          if (elementsRaw != null) {
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+              for (var _iterator3 = elementsRaw[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var match = _step3.value;
+
+
+                var ObjectKey = match.slice(3, -1);
+                var navigoParam = ObjectKey.replace(/@/g, '');
+                route.paramBinding[navigoParam] = ObjectKey;
+                //console.log(match,ObjectKey,dotProp.get(paramObject, ObjectKey));
+                //let ObjectValue=dotProp.get(data, ObjectKey)
+                url = url.replace(match, ':' + navigoParam);
+              }
+            } catch (err) {
+              _didIteratorError3 = true;
+              _iteratorError3 = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                  _iterator3.return();
+                }
+              } finally {
+                if (_didIteratorError3) {
+                  throw _iteratorError3;
+                }
+              }
+            }
+          }
+
+          // let encoded =encodeURIComponent(route.url);
+          // console.log(encoded);
+          // encoded=encoded.replace('%2F','/');
+          // encoded=encoded.replace('%3A',':');
+          // console.log(encoded);
+          _this2.router.on(url, function (params, query) {
+            //console.log('route',route.url,params,query);
+            var objectParam = {};
+            for (var param in params) {
+              var realParam = route.paramBinding[param];
+              objectParam[realParam] = params[param];
+            }
+            //console.log(objectParam);
+            _this2.publish(route.outputMessage, objectParam);
+          }).resolve();
+        };
+
+        for (var _iterator2 = this.routes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          _loop();
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
         }
       }
-    }, 100); // check every 100ms
-  }
+    }
+  }, {
+    key: 'setChannel',
+    value: function setChannel(channel) {
+      var _this3 = this;
 
-}
-/* harmony export (immutable) */ __webpack_exports__["default"] = WebComponentMessaging;
+      //console.log('ALLO');
+      this.channel = channel;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        var _loop2 = function _loop2() {
+          var route = _step4.value;
+
+          _this3.subscriptions.push(channel.subscribe(route.inputMessage, function (data, envelope) {
+            var url = route.url;
+            var regex = /{(\$.*?)}/g;
+            var elementsRaw = url.match(regex);
+            if (elementsRaw != null) {
+              var _iteratorNormalCompletion5 = true;
+              var _didIteratorError5 = false;
+              var _iteratorError5 = undefined;
+
+              try {
+                for (var _iterator5 = elementsRaw[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                  var match = _step5.value;
+
+                  var ObjectKey = match.slice(3, -1);
+
+                  //console.log(match,ObjectKey,dotProp.get(paramObject, ObjectKey));
+                  //let ObjectValue=dotProp.get(data, ObjectKey)
+                  url = url.replace(match, encodeURIComponent(_dotProp2.default.get(data, ObjectKey)));
+                }
+              } catch (err) {
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                    _iterator5.return();
+                  }
+                } finally {
+                  if (_didIteratorError5) {
+                    throw _iteratorError5;
+                  }
+                }
+              }
+            }
+            //console.log('ROUTE ASK',url);
+            _this3.router.navigate(url);
+          }));
+        };
+
+        for (var _iterator4 = this.routes[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          _loop2();
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+    }
+  }, {
+    key: 'publish',
+    value: function publish(message, data) {
+      var _this4 = this;
+
+      var count = 0;
+      var checkExist = setInterval(function () {
+        if (_this4.channel != undefined) {
+          //console.log('CRUD message',message);
+          clearInterval(checkExist);
+          _this4.channel.publish(message, data);
+        } else {
+          count++;
+          if (count > 100) {
+            clearInterval(checkExist);
+            console.warn('http channel doesn\'t exist after 10s');
+          }
+        }
+      }, 100); // check every 100ms
+    }
+  }]);
+
+  return WebComponentMessaging;
+}(HTMLElement);
+
+exports.default = WebComponentMessaging;
 
 window.customElements.define('navigo-router', WebComponentMessaging);
 

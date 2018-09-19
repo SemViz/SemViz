@@ -54,13 +54,13 @@ export default class WebComponentMessaging extends HTMLElement {
       // console.log(encoded);
       this.router
         .on(url, (params, query)=>{
-          console.log('route',route.url,params,query);
+          //console.log('route',route.url,params,query);
           let objectParam={};
           for(let param in params){
             let realParam=route.paramBinding[param];
             objectParam[realParam]=params[param];
           }
-          console.log(objectParam);
+          //console.log(objectParam);
           this.publish(route.outputMessage,objectParam);
         })
         .resolve();
@@ -85,7 +85,7 @@ export default class WebComponentMessaging extends HTMLElement {
             url = url.replace(match, encodeURIComponent(dotProp.get(data, ObjectKey)));
           }
         }
-        console.log('ROUTE ASK',url);
+        //console.log('ROUTE ASK',url);
         this.router.navigate(url);
       }));
     }
@@ -95,7 +95,7 @@ export default class WebComponentMessaging extends HTMLElement {
     let count = 0;
     let checkExist = setInterval(() => {
       if (this.channel != undefined) {
-        console.log('CRUD message',message);
+        //console.log('CRUD message',message);
         clearInterval(checkExist);
         this.channel.publish(message,data)
       } else {

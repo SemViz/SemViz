@@ -8,6 +8,7 @@
       <script src="./PostalMessaging/PostalMessaging.js" type="module"></script>
       <script src="./httpFetch/httpFetch.js" type="module"></script>
       <script src="./navigoRouter/navigoRouter.js" type="module"></script>
+      <script src="./webTripleStore/webTripleStore.js" type="module"></script>
       <web-component-link url="http://localhost:8081/template/" main="index.html" tag="semviz-base-template" class="SemVizBaseTemplate"></web-component-link>
       <web-component-link url="http://localhost:8082/skosTreeSV/" main="index.html" tag="skos-tree-sv" class="SkosTreeSV"></web-component-link>
       <web-component-link url="http://localhost:8082/semanticTableSV/" main="index.html" tag="semantic-table-sv" class="SemanticTableSV"></web-component-link>
@@ -22,12 +23,13 @@
     <semantic-form-sv slot="slot3" id="semanticForm"></semantic-form-sv>
   </semviz-base-template>
 
-  <http-fetch id="alternatives-get-many" url="http://localhost:8080/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}'
-    url-read-one="http://route?id={$.id}" method="GET">
+  <web-triple-store id="ontology-web-triple-store" namespace-file-mapping="http://localhost:8083/config/namespaceFileMapping.json"></web-triple-store>
+
+  <http-fetch id="alternatives-get-many" url="http://semantic-bus.org/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}' method="GET" data-path="data" ontology-web-triple-store="#ontology-web-triple-store">
   </http-fetch>
-  <http-fetch id="alternatives-get-one" url="http://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET">
+  <http-fetch id="alternatives-get-one" url="http://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET" data-path="data">
   </http-fetch>
-  <http-fetch id="taxonomy-get-many" url="http://semantic-bus.org/data/api/TaxonomiePWA" method="GET">
+  <http-fetch id="taxonomy-get-many" url="http://semantic-bus.org/data/api/TaxonomiePWA" method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
   </http-fetch>
 
   <navigo-router id="router">
@@ -44,16 +46,14 @@
   <postal-messaging source="#semanticTable" target="#router">
     <message source="table/item/select" target="formRequest"></message>
   </postal-messaging>
+
+  <postal-messaging source="#router" target="#template">
+    <message source="form" target="form"></message>
+    <message source="search" target="search"></message>
+  </postal-messaging>
   <postal-messaging source="#router" target="#alternatives-get-one">
     <message source="form" target="fetch"></message>
   </postal-messaging>
-  <postal-messaging source="#router" target="#template">
-    <message source="form" target="form"></message>
-  </postal-messaging>
-  <postal-messaging source="#router" target="#template">
-    <message source="search" target="search"></message>
-  </postal-messaging>
-
   <postal-messaging source="#router" target="#alternatives-get-many">
     <message source="search" target="fetch"></message>
   </postal-messaging>
@@ -62,10 +62,12 @@
   </postal-messaging>
   <postal-messaging source="#alternatives-get-many" target="#semanticTable">
     <message source="response" target="table/items/set"></message>
+    <message source="ontology" target="table/ontology/set"></message>
     <message source="loading" target="table/items/loading"></message>
   </postal-messaging>
   <postal-messaging source="#alternatives-get-one" target="#semanticForm">
     <message source="response" target="form/item/set"></message>
+    <message source="ontology" target="form/ontology/set"></message>
     <message source="loading" target="form/item/loading"></message>
   </postal-messaging>
   <postal-messaging source="#taxonomy-get-many" target="#skosTree">

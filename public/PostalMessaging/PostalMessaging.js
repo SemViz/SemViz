@@ -65,160 +65,245 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_postal__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_postal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_postal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_query_selector_shadow_dom__ = __webpack_require__(6);
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _postal = __webpack_require__(1);
+
+var _postal2 = _interopRequireDefault(_postal);
+
+var _querySelectorShadowDom = __webpack_require__(6);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 window.postalChannelDirectory = {};
 //window.postalRouteur.channelDirectory = [];
 
-class WebComponentMessaging extends HTMLElement {
-  constructor() {
-    super();
-    this.mesages = [];
-    this.waitLinkingStack = [];
+var WebComponentMessaging = function (_HTMLElement) {
+  _inherits(WebComponentMessaging, _HTMLElement);
+
+  function WebComponentMessaging() {
+    _classCallCheck(this, WebComponentMessaging);
+
+    var _this = _possibleConstructorReturn(this, (WebComponentMessaging.__proto__ || Object.getPrototypeOf(WebComponentMessaging)).call(this));
+
+    _this.mesages = [];
+    _this.waitLinkingStack = [];
+    return _this;
   }
-  connectedCallback() {
-    this.source = this.attributes.getNamedItem('source').nodeValue;
-    this.target = this.attributes.getNamedItem('target').nodeValue;
-    this.sourceChannel;
-    this.targetChannel;
-    let messages = this.querySelectorAll('message');
-    //console.log(messages);
-    this.messages = messages.map(r => {
-      return {
-        source: r.attributes.getNamedItem('source').nodeValue,
-        target: r.attributes.getNamedItem('target').nodeValue
-      };
-    });
 
-    if (window.postalChannelDirectory[this.source] == undefined) {
-      let chan = __WEBPACK_IMPORTED_MODULE_0_postal___default.a.channel(this.source);
-      window.postalChannelDirectory[this.source] = {
-        channel: chan,
-        component: undefined,
-        targetWaintingComponent: [],
-        sourceWaitingComponent: []
-      };
-      this.sourceChannel = chan;
-      this.affectSourceChannel();
-    } else {
-      //console.warn(`channel ${this.source} ever exist`);
-      this.sourceChannel = window.postalChannelDirectory[this.source].channel;
-      this.affectSourceChannel();
-    }
+  _createClass(WebComponentMessaging, [{
+    key: 'connectedCallback',
+    value: function connectedCallback() {
+      var _this2 = this;
 
-    if (window.postalChannelDirectory[this.target] == undefined) {
-      let chan = __WEBPACK_IMPORTED_MODULE_0_postal___default.a.channel(this.target);
-      window.postalChannelDirectory[this.target] = {
-        channel: chan,
-        component: undefined,
-        targetWaintingComponent: [],
-        sourceWaitingComponent: []
-      };
-      this.targetChannel = chan;
-      this.affectTargetChannel();
-    } else {
-      //console.warn(`channel ${this.target} ever exist`);
-      this.targetChannel = window.postalChannelDirectory[this.target].channel;
-      this.affectTargetChannel();
-    }
-
-    for (let message of this.messages) {
-      this.sourceChannel.subscribe(message.source, (data, envelope) => {
-        this.waitLinkingStack.push({
-          message: message.target,
-          data: data
-        });
-        if (this.targetComponent == undefined) {
-          // console.log('MESSAGING SOURCE WAITING', this.targetMessage);
-        } else {
-            //console.log('MESSAGING SOURCE PUBLISH', this.targetMessage, this);
-            //this.targetChannel.publish(this.targetMessage, data);
-          }
-        this.unstackWaitLinkingStack();
+      this.source = this.attributes.getNamedItem('source').nodeValue;
+      this.target = this.attributes.getNamedItem('target').nodeValue;
+      this.sourceChannel;
+      this.targetChannel;
+      var messages = this.querySelectorAll('message');
+      //console.log(messages);
+      this.messages = messages.map(function (r) {
+        return {
+          source: r.attributes.getNamedItem('source').nodeValue,
+          target: r.attributes.getNamedItem('target').nodeValue
+        };
       });
-    }
-  }
 
-  affectSourceChannel() {
-    let countSource = 0;
-    let checkExist = setInterval(() => {
-      //let sourceElement = document.querySelector(this.source);
-      //console.log(this.source,sourceElement);
-      let component = Object(__WEBPACK_IMPORTED_MODULE_1_query_selector_shadow_dom__["a" /* querySelectorDeep */])(this.source);
-      //console.log('components',components);
-      if (component != undefined && component.setChannel != undefined) {
-        clearInterval(checkExist);
-        //console.log("Exists source!",component);
-
-        if (component.channel == undefined) {
-          //console.log(`component ${this.source} setChannel`,this.sourceChannel);
-          component.setChannel(this.sourceChannel);
-        } else {
-          //console.log(`component ${this.source} setChannel ever done`);
-        }
-        this.sourceComponent = component;
-        //window.postalChannelDirectory[this.target].component=component;
-        this.unstackWaitLinkingStack();
+      if (window.postalChannelDirectory[this.source] == undefined) {
+        var chan = _postal2.default.channel(this.source);
+        window.postalChannelDirectory[this.source] = {
+          channel: chan,
+          component: undefined,
+          targetWaintingComponent: [],
+          sourceWaitingComponent: []
+        };
+        this.sourceChannel = chan;
+        this.affectSourceChannel();
       } else {
-        countSource++;
-        if (countSource > 100) {
-          console.warn(`component ${this.source} or the setChannel function doesn't exist after 10s`);
-          clearInterval(checkExist);
-        }
+        //console.warn(`channel ${this.source} ever exist`);
+        this.sourceChannel = window.postalChannelDirectory[this.source].channel;
+        this.affectSourceChannel();
       }
-    }, 100);
-  }
-  affectTargetChannel() {
-    let countTarget = 0;
-    let checkExist = setInterval(() => {
-      //let TargetElement = document.querySelector(this.Target);
-      //console.log(this.Target,TargetElement);
-      let component = Object(__WEBPACK_IMPORTED_MODULE_1_query_selector_shadow_dom__["a" /* querySelectorDeep */])(this.target);
-      //console.log('components',components);
-      if (component != undefined && component.setChannel != undefined) {
-        //console.log('ALLOOOO');
-        clearInterval(checkExist);
-        //console.log("Exists target!",component);
 
-        if (component.channel == undefined) {
-          //console.log(`component ${this.target} setChannel`);
-          component.setChannel(this.targetChannel);
-        } else {
-          //console.log(`component ${this.target} setChannel ever done`);
-        }
-        this.targetComponent = component;
-        //window.postalChannelDirectory[this.target].component=component;
-        this.unstackWaitLinkingStack();
+      if (window.postalChannelDirectory[this.target] == undefined) {
+        var _chan = _postal2.default.channel(this.target);
+        window.postalChannelDirectory[this.target] = {
+          channel: _chan,
+          component: undefined,
+          targetWaintingComponent: [],
+          sourceWaitingComponent: []
+        };
+        this.targetChannel = _chan;
+        this.affectTargetChannel();
       } else {
-        countTarget++;
-        if (countTarget > 100) {
-          console.warn(`component ${this.target} or the setChannel function doesn't exist after 10s`);
-          clearInterval(checkExist);
+        //console.warn(`channel ${this.target} ever exist`);
+        this.targetChannel = window.postalChannelDirectory[this.target].channel;
+        this.affectTargetChannel();
+      }
+
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        var _loop = function _loop() {
+          var message = _step.value;
+
+          _this2.sourceChannel.subscribe(message.source, function (data, envelope) {
+            _this2.waitLinkingStack.push({
+              message: message.target,
+              data: data
+            });
+            if (_this2.targetComponent == undefined) {
+              // console.log('MESSAGING SOURCE WAITING', this.targetMessage);
+            } else {
+                //console.log('MESSAGING SOURCE PUBLISH', this.targetMessage, this);
+                //this.targetChannel.publish(this.targetMessage, data);
+              }
+            _this2.unstackWaitLinkingStack();
+          });
+        };
+
+        for (var _iterator = this.messages[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          _loop();
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
         }
       }
-    }, 100);
-  }
-  unstackWaitLinkingStack() {
-    // console.log('XXXXX unstackWaitLinkingStack', this.waitLinkingStack);
-    if (this.sourceComponent != undefined && this.targetComponent != undefined) {
-      for (let stack of this.waitLinkingStack) {
-        // console.log('MESSAGING SOURCE PUBLISH LATER', stack.message);
-        this.targetChannel.publish(stack.message, stack.data);
-      }
-      this.waitLinkingStack = [];
     }
-  }
+  }, {
+    key: 'affectSourceChannel',
+    value: function affectSourceChannel() {
+      var _this3 = this;
 
-}
-/* harmony export (immutable) */ __webpack_exports__["default"] = WebComponentMessaging;
+      var countSource = 0;
+      var checkExist = setInterval(function () {
+        //let sourceElement = document.querySelector(this.source);
+        //console.log(this.source,sourceElement);
+        var component = (0, _querySelectorShadowDom.querySelectorDeep)(_this3.source);
+        //console.log('components',components);
+        if (component != undefined && component.setChannel != undefined) {
+          clearInterval(checkExist);
+          //console.log("Exists source!",component);
+
+          if (component.channel == undefined) {
+            //console.log(`component ${this.source} setChannel`,this.sourceChannel);
+            component.setChannel(_this3.sourceChannel);
+          } else {
+            //console.log(`component ${this.source} setChannel ever done`);
+          }
+          _this3.sourceComponent = component;
+          //window.postalChannelDirectory[this.target].component=component;
+          _this3.unstackWaitLinkingStack();
+        } else {
+          countSource++;
+          if (countSource > 100) {
+            console.warn('component ' + _this3.source + ' or the setChannel function doesn\'t exist after 10s');
+            clearInterval(checkExist);
+          }
+        }
+      }, 100);
+    }
+  }, {
+    key: 'affectTargetChannel',
+    value: function affectTargetChannel() {
+      var _this4 = this;
+
+      var countTarget = 0;
+      var checkExist = setInterval(function () {
+        //let TargetElement = document.querySelector(this.Target);
+        //console.log(this.Target,TargetElement);
+        var component = (0, _querySelectorShadowDom.querySelectorDeep)(_this4.target);
+        //console.log('components',components);
+        if (component != undefined && component.setChannel != undefined) {
+          //console.log('ALLOOOO');
+          clearInterval(checkExist);
+          //console.log("Exists target!",component);
+
+          if (component.channel == undefined) {
+            //console.log(`component ${this.target} setChannel`);
+            component.setChannel(_this4.targetChannel);
+          } else {
+            //console.log(`component ${this.target} setChannel ever done`);
+          }
+          _this4.targetComponent = component;
+          //window.postalChannelDirectory[this.target].component=component;
+          _this4.unstackWaitLinkingStack();
+        } else {
+          countTarget++;
+          if (countTarget > 100) {
+            console.warn('component ' + _this4.target + ' or the setChannel function doesn\'t exist after 10s');
+            clearInterval(checkExist);
+          }
+        }
+      }, 100);
+    }
+  }, {
+    key: 'unstackWaitLinkingStack',
+    value: function unstackWaitLinkingStack() {
+      // console.log('XXXXX unstackWaitLinkingStack', this.waitLinkingStack);
+      if (this.sourceComponent != undefined && this.targetComponent != undefined) {
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = this.waitLinkingStack[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var stack = _step2.value;
+
+            // console.log('MESSAGING SOURCE PUBLISH LATER', stack.message);
+            this.targetChannel.publish(stack.message, stack.data);
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+
+        this.waitLinkingStack = [];
+      }
+    }
+  }]);
+
+  return WebComponentMessaging;
+}(HTMLElement);
+
+exports.default = WebComponentMessaging;
 
 window.customElements.define('postal-messaging', WebComponentMessaging);
 
@@ -18091,8 +18176,9 @@ module.exports = __webpack_amd_options__;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export querySelectorAllDeep */
-/* harmony export (immutable) */ __webpack_exports__["a"] = querySelectorDeep;
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["querySelectorAllDeep"] = querySelectorAllDeep;
+/* harmony export (immutable) */ __webpack_exports__["querySelectorDeep"] = querySelectorDeep;
 /**
  * @author Georgegriff@ (George Griffiths)
  * License Apache-2.0

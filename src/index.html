@@ -56,10 +56,12 @@
 
   <postal-messaging source="#alternatives-get-many" target="#semanticTable">
     <message source="response" target="table/items/set"></message>
+    <message source="ontology" target="table/ontology/set"></message>
     <message source="loading" target="table/items/loading"></message>
   </postal-messaging>
   <postal-messaging source="#alternatives-get-one" target="#semanticForm">
     <message source="response" target="form/item/set"></message>
+    <message source="ontology" target="form/ontology/set"></message>
     <message source="loading" target="form/item/loading"></message>
   </postal-messaging>
   <postal-messaging source="#taxonomy-get-many" target="#skosTree">

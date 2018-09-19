@@ -23,7 +23,7 @@ module.exports = [{
   plugins: [
     new HtmlWebpackPlugin({
       inject: false,
-      template: 'src/index.html'
+      template: 'src/indexDev.html'
     }),
     new CopyWebpackPlugin([{
         from: 'src/config/',
@@ -48,7 +48,7 @@ module.exports = [{
   module: {
     rules: [{
       test: /\.js$/,
-      exclude: /(node_modules|bower_components)/,
+      //exclude: /(node_modules|bower_components)/,
       use: {
         loader: 'babel-loader',
         options: {}
@@ -82,6 +82,25 @@ module.exports = [{
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'public/navigoRouter')
+  },
+  module: {
+    rules: [{
+      test: /\.js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {}
+      }
+    }]
+  },
+  plugins: []
+},{
+  entry: {
+    webTripleStore: './src/webTripleStore/webTripleStore.js'
+  },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'public/webTripleStore')
   },
   module: {
     rules: [{
