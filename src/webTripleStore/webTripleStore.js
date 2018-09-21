@@ -49,7 +49,7 @@ export default class webTripleStore extends HTMLElement {
                   file = mapping[0].file;
                 }
               }
-              console.log(value,file);
+              //console.log(value, file);
               promises.push(this.resolveSemanticSource(file));
             }
           }
@@ -65,7 +65,8 @@ export default class webTripleStore extends HTMLElement {
 
   }
 
-  reduceNamedGraph(records) {
+  reduceNamedGraph(records,options) {
+    options = options || {};
     //console.log('REDUCE');
     return new Promise((resolve, reject) => {
       try {
@@ -90,9 +91,9 @@ export default class webTripleStore extends HTMLElement {
     });
   }
 
-  reduceSubject(records) {
-    options=options||{};
-    //console.log('REDUCE');
+  reduceSubject(records,options) {
+    options = options || {};
+    console.log('REDUCE');
     return new Promise((resolve, reject) => {
       try {
         let out = [];
@@ -118,29 +119,38 @@ export default class webTripleStore extends HTMLElement {
   }
 
   reduce(records, options) {
-    options=options||{};
+    options = options || {};
     return new Promise((resolve, reject) => {
-      this.reduceNamedGraph(records).then(graphs => {
-        if(options.reduceSubject==true){
-          let promises = graphs.map(r => this.reduceSubject(r['@graph']));
-          Promise.all(promises).then(reducedGraphs => {
-            for (let graphKey in graphs) {
-              graphs[graphKey]['@graph'] = reducedGraphs[graphKey];
-            }
-            resolve(graphs);
-          }).catch(e => {
-            console.error(e);
-            reject(e);
-          })
-        }else{
-          resolve(graphs)
-        }
-      })
+      try {
+        this.reduceNamedGraph(records).then(graphs => {
+          if (options.reduceSubject == true) {
+            console.log('ALLO1',graphs);
+            let promises = graphs.map(r => this.reduceSubject(r['@graph']));
+            console.log('ALLO2');
+            Promise.all(promises).then(reducedGraphs => {
+              console.log('ALLO2');
+              for (let graphKey in graphs) {
+                graphs[graphKey]['@graph'] = reducedGraphs[graphKey];
+              }
+              resolve(graphs);
+            }).catch(e => {
+              console.error(e);
+              reject(e);
+            })
+          } else {
+            resolve(graphs)
+          }
+        })
+      } catch (e) {
+        console.error(e);
+        reject(e);
+      }
+
     });
   }
 
   getALL(options) {
-    options=options||{};
+    options = options || {};
     //console.log('ALLO');
     return new Promise((resolve, reject) => {
       //console.log('ALLO-1');
@@ -198,8 +208,9 @@ export default class webTripleStore extends HTMLElement {
         })
 
       } else {
-        this.cachedUrl.push(url)
-        let corsUrl = 'https://cors-anywhere.herokuapp.com/' + url;
+        //this.cachedUrl.push(url)
+        //let corsUrl = 'https://cors-anywhere.herokuapp.com/' + url;
+        let corsUrl = url;
         //console.log(corsUrl);
         let contentType;
         fetch(corsUrl, {
@@ -217,7 +228,7 @@ export default class webTripleStore extends HTMLElement {
           })
           .then((data) => {
             //console.log('ALLO',contentType);
-            //console.log('Ontology response',value,contentType, data);
+            //console.log('response',value,contentType, data);
             try {
               let parser = this.formats.parsers[contentType];
               let quads = [];
@@ -237,7 +248,6 @@ export default class webTripleStore extends HTMLElement {
                     //console.log(this);
                     try {
                       this.reduceNamedGraph(jsonLdObjet).then(reduced => {
-                        console.log();
                         localStorage.setItem(reduced[0]['@id'], JSON.stringify(reduced[0]['@graph']));
                         resolve();
                       })
@@ -268,7 +278,7 @@ export default class webTripleStore extends HTMLElement {
                     //console.log(this);
                     try {
                       this.reduceNamedGraph(jsonLdObjet).then(reduced => {
-                        console.log();
+                        // console.log();
                         localStorage.setItem(reduced[0]['@id'], JSON.stringify(reduced[0]['@graph']));
                         resolve();
                       })
@@ -308,19 +318,31 @@ export default class webTripleStore extends HTMLElement {
     }
     try {
       //console.log('ALLO');
-      fetch(this.attributesValues['namespace-file-mapping'], {
-        method: 'GET'
-      }).then((response) => {
-        return response.json();
-      }).then((data) => {
-        this.namespaceFileMapping = data;
-        console.log('namespace-file-mapping', data);
-      }).catch((error) => {
-        //console.error('Request failed', value, error);
-        console.log('Request to ' + url + ' failed')
-      });
+      if (this.attributesValues['namespace-file-mapping'] != undefined) {
+        fetch(this.attributesValues['namespace-file-mapping'], {
+          method: 'GET'
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          this.namespaceFileMapping = data;
+          //console.log('namespace-file-mapping', data);
+        }).catch((error) => {
+          //console.error('Request failed', value, error);
+          console.error('Request to ' + url + ' failed')
+        });
+
+      }
+      //console.log(this.attributesValues['autoload-url']);
+      if (this.attributesValues['autoload-url'] != undefined) {
+        this.resolveSemanticSource(this.attributesValues['autoload-url']).then(() => {
+          this.getALL({reduceSubject:true}).then(records => {
+            console.log(records);
+          })
+        })
+      }
+
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
   }

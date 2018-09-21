@@ -25994,7 +25994,7 @@ var webTripleStore = function (_HTMLElement) {
                     file = mapping[0].file;
                   }
                 }
-                console.log(value, file);
+                //console.log(value, file);
                 promises.push(_this2.resolveSemanticSource(file));
               }
             }
@@ -26009,7 +26009,8 @@ var webTripleStore = function (_HTMLElement) {
     }
   }, {
     key: 'reduceNamedGraph',
-    value: function reduceNamedGraph(records) {
+    value: function reduceNamedGraph(records, options) {
+      options = options || {};
       //console.log('REDUCE');
       return new Promise(function (resolve, reject) {
         try {
@@ -26057,9 +26058,9 @@ var webTripleStore = function (_HTMLElement) {
     }
   }, {
     key: 'reduceSubject',
-    value: function reduceSubject(records) {
+    value: function reduceSubject(records, options) {
       options = options || {};
-      //console.log('REDUCE');
+      console.log('REDUCE');
       return new Promise(function (resolve, reject) {
         try {
           var out = [];
@@ -26112,24 +26113,32 @@ var webTripleStore = function (_HTMLElement) {
 
       options = options || {};
       return new Promise(function (resolve, reject) {
-        _this3.reduceNamedGraph(records).then(function (graphs) {
-          if (options.reduceSubject == true) {
-            var promises = graphs.map(function (r) {
-              return _this3.reduceSubject(r['@graph']);
-            });
-            Promise.all(promises).then(function (reducedGraphs) {
-              for (var graphKey in graphs) {
-                graphs[graphKey]['@graph'] = reducedGraphs[graphKey];
-              }
+        try {
+          _this3.reduceNamedGraph(records).then(function (graphs) {
+            if (options.reduceSubject == true) {
+              console.log('ALLO1', graphs);
+              var promises = graphs.map(function (r) {
+                return _this3.reduceSubject(r['@graph']);
+              });
+              console.log('ALLO2');
+              Promise.all(promises).then(function (reducedGraphs) {
+                console.log('ALLO2');
+                for (var graphKey in graphs) {
+                  graphs[graphKey]['@graph'] = reducedGraphs[graphKey];
+                }
+                resolve(graphs);
+              }).catch(function (e) {
+                console.error(e);
+                reject(e);
+              });
+            } else {
               resolve(graphs);
-            }).catch(function (e) {
-              console.error(e);
-              reject(e);
-            });
-          } else {
-            resolve(graphs);
-          }
-        });
+            }
+          });
+        } catch (e) {
+          console.error(e);
+          reject(e);
+        }
       });
     }
   }, {
@@ -26198,8 +26207,9 @@ var webTripleStore = function (_HTMLElement) {
             resolve();
           });
         } else {
-          _this6.cachedUrl.push(url);
-          var corsUrl = 'https://cors-anywhere.herokuapp.com/' + url;
+          //this.cachedUrl.push(url)
+          //let corsUrl = 'https://cors-anywhere.herokuapp.com/' + url;
+          var corsUrl = url;
           //console.log(corsUrl);
           var contentType = void 0;
           fetch(corsUrl, {
@@ -26215,7 +26225,7 @@ var webTripleStore = function (_HTMLElement) {
             return response.text();
           }).then(function (data) {
             //console.log('ALLO',contentType);
-            //console.log('Ontology response',value,contentType, data);
+            //console.log('response',value,contentType, data);
             try {
               var parser = _this6.formats.parsers[contentType];
               var quads = [];
@@ -26235,7 +26245,6 @@ var webTripleStore = function (_HTMLElement) {
                     //console.log(this);
                     try {
                       _this6.reduceNamedGraph(jsonLdObjet).then(function (reduced) {
-                        console.log();
                         localStorage.setItem(reduced[0]['@id'], JSON.stringify(reduced[0]['@graph']));
                         resolve();
                       });
@@ -26266,7 +26275,7 @@ var webTripleStore = function (_HTMLElement) {
                     //console.log(this);
                     try {
                       _this6.reduceNamedGraph(jsonLdObjet).then(function (reduced) {
-                        console.log();
+                        // console.log();
                         localStorage.setItem(reduced[0]['@id'], JSON.stringify(reduced[0]['@graph']));
                         resolve();
                       });
@@ -26329,19 +26338,29 @@ var webTripleStore = function (_HTMLElement) {
 
       try {
         //console.log('ALLO');
-        fetch(this.attributesValues['namespace-file-mapping'], {
-          method: 'GET'
-        }).then(function (response) {
-          return response.json();
-        }).then(function (data) {
-          _this7.namespaceFileMapping = data;
-          console.log('namespace-file-mapping', data);
-        }).catch(function (error) {
-          //console.error('Request failed', value, error);
-          console.log('Request to ' + url + ' failed');
-        });
+        if (this.attributesValues['namespace-file-mapping'] != undefined) {
+          fetch(this.attributesValues['namespace-file-mapping'], {
+            method: 'GET'
+          }).then(function (response) {
+            return response.json();
+          }).then(function (data) {
+            _this7.namespaceFileMapping = data;
+            //console.log('namespace-file-mapping', data);
+          }).catch(function (error) {
+            //console.error('Request failed', value, error);
+            console.error('Request to ' + url + ' failed');
+          });
+        }
+        //console.log(this.attributesValues['autoload-url']);
+        if (this.attributesValues['autoload-url'] != undefined) {
+          this.resolveSemanticSource(this.attributesValues['autoload-url']).then(function () {
+            _this7.getALL({ reduceSubject: true }).then(function (records) {
+              console.log(records);
+            });
+          });
+        }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
   }]);

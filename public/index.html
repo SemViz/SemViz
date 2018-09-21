@@ -25,6 +25,10 @@
 
   <web-triple-store id="ontology-web-triple-store" namespace-file-mapping="http://localhost:8083/config/namespaceFileMapping.json"></web-triple-store>
 
+  <web-triple-store id="forms-web-triple-store" autoload-url="http://localhost:8083/config/alternativConf.ld+json"></web-triple-store>
+
+
+
   <http-fetch id="alternatives-get-many" url="http://semantic-bus.org/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}' method="GET" data-path="data" ontology-web-triple-store="#ontology-web-triple-store">
   </http-fetch>
   <http-fetch id="alternatives-get-one" url="http://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET" data-path="data">
