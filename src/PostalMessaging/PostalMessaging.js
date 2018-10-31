@@ -19,8 +19,8 @@ export default class WebComponentMessaging extends HTMLElement {
     this.sourceChannel;
     this.targetChannel;
     let messages = this.querySelectorAll('message');
-    //console.log(messages);
-    this.messages=messages.map(r=>{
+    //console.log(messages,messages.map);
+    this.messages=Array.from(messages).map(r=>{
       return {
         source : r.attributes.getNamedItem('source').nodeValue,
         target : r.attributes.getNamedItem('target').nodeValue

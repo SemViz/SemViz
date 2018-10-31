@@ -2,7 +2,7 @@
 
 <head>
   
-    <script src="./SemViz.1ed3e5c28dbf404b762a.js"></script>
+    <script src="./SemViz.b7c30d513096faf5b77a.js"></script>
     
       <script src="./WebComponentLink/WebComponentLink.js" type="module"></script>
       <script src="./PostalMessaging/PostalMessaging.js" type="module"></script>
@@ -18,22 +18,36 @@
 
 <body>
   <semviz-base-template id="template">
-    <skos-tree-sv slot="slot1" id="skosTree"></skos-tree-sv>
-    <semantic-table-sv slot="slot2" id="semanticTable"></semantic-table-sv>
+    <skos-tree-sv slot="slot1" id="skosTree">
+      <tree-item>
+        <property>skos:prefLabel</property>
+        <property>skos:broader</property>
+        <facet name="label-property">skos:prefLabel</facet>
+        <facet name="parent-property">skos:broader</facet>
+      </tree-item>
+    </skos-tree-sv>
+    <semantic-table-sv slot="slot2" id="semanticTable">
+      <short-text>
+        <property>rdf:label</property>
+        <facet name="label">nom</facet>
+      </short-text>
+    </semantic-table-sv>
     <semantic-form-sv slot="slot3" id="semanticForm"></semantic-form-sv>
   </semviz-base-template>
 
   <web-triple-store id="ontology-web-triple-store" namespace-file-mapping="http://localhost:8083/config/namespaceFileMapping.json"></web-triple-store>
+<!--
+  <web-triple-store id="forms-web-triple-store" autoload-url="http://localhost:8083/config/alternativConf.jsonld"></web-triple-store>
+  <web-triple-store id="forms-web-triple-store" autoload-url="http://semantic-bus.org/data/api/PWA_TAXO_NEW"></web-triple-store> -->
+  <!-- <web-triple-store id="forms-web-triple-store" autoload-url="http://localhost:8083/config/alternativConfTTL.ttl"></web-triple-store> -->
 
-  <web-triple-store id="forms-web-triple-store" autoload-url="http://localhost:8083/config/alternativConf.ld+json"></web-triple-store>
 
 
-
-  <http-fetch id="alternatives-get-many" url="http://semantic-bus.org/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}' method="GET" data-path="data" ontology-web-triple-store="#ontology-web-triple-store">
+  <http-fetch id="alternatives-get-many" semantic-storage url="http://localhost:8080/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}' method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
   </http-fetch>
   <http-fetch id="alternatives-get-one" url="http://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET" data-path="data">
   </http-fetch>
-  <http-fetch id="taxonomy-get-many" url="http://semantic-bus.org/data/api/TaxonomiePWA" method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
+  <http-fetch id="taxonomy-get-many" semantic-storage url="http://semantic-bus.org/data/api/PWA_TAXO_NEW" method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
   </http-fetch>
 
   <navigo-router id="router">

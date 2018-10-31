@@ -15,7 +15,7 @@ export default class WebComponentMessaging extends HTMLElement {
 
     let routes = this.querySelectorAll('route');
     //console.log(messages);
-    this.routes=routes.map(r=>{
+    this.routes=Array.from(routes).map(r=>{
       return {
         inputMessage : r.attributes.getNamedItem('input-message').nodeValue,
         outputMessage : r.attributes.getNamedItem('output-message').nodeValue,

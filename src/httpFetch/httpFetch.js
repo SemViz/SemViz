@@ -1,5 +1,6 @@
 import dotProp from 'dot-prop'
 import sift from 'sift'
+import WebTripleStore from './../lib/WebTripleStoreLib.js'
 // import rdfExt from 'rdf-ext'
 //import N3Parser from 'rdf-parser-n3'
 //import rdfFetch from 'rdf-fetch-lite'
@@ -29,79 +30,7 @@ export default class httpCrud extends HTMLElement {
       //this.router.navigate('form');
     }));
   }
-  resolveSemanticContext(context) {
 
-    return new Promise((resolve, reject) => {
-      try {
-        console.log('ALLO');
-        fetch("http://localhost:8083/config/ontologyFileMapping.json", {
-          method: 'GET'
-        }).then((response) => {
-          console.log(response);
-        }).catch((error) => {
-          //console.error('Request failed', value, error);
-          console.log('Request to ' + url + ' failed')
-        });
-      } catch (e) {
-        console.log(e);
-      }
-      // try {
-      //   let promises = [];
-      //   let reflect = p => p.then(v => ({
-      //       v,
-      //       status: "fulfilled"
-      //     }),
-      //     e => ({
-      //       e,
-      //       status: "rejected"
-      //     }));
-      //   for (let key in context) {
-      //     let value = context[key];
-      //     if (typeof(value) == 'string' || value instanceof String) {
-      //       if (key.indexOf("@base") == -1) {
-      //         promises.push(this.resolveSemanticSource(value));
-      //       }
-      //     }
-      //   }
-      //   Promise.all(promises.map(reflect)).then((results) => {
-      //     try {
-      //       let resolved = sift({
-      //         status: 'fulfilled'
-      //       }, results);
-      //       let merged = [];
-      //       for (let ontology of resolved) {
-      //         for (let triplet of ontology.v) {
-      //           let id = triplet['@id'];
-      //           //console.log('id',id);
-      //           let everexist = sift({
-      //             '@id': triplet['@id']
-      //           }, merged);
-      //           //console.log(everexist);
-      //           if (everexist.length == 0) {
-      //             merged.push(triplet);
-      //           } else {
-      //             if (everexist[0][Object.keys(triplet)[1]] == undefined) {
-      //               //console.log('NEW property',everexist[0],triplet);
-      //               everexist[0][Object.keys(triplet)[1]] = triplet[Object.keys(triplet)[1]]
-      //             } else {
-      //
-      //             }
-      //
-      //             //console.log(Object.keys(triplet)[1]);
-      //           }
-      //         }
-      //       }
-      //       resolve(merged);
-      //     } catch (e) {
-      //       reject(e);
-      //     }
-      //   });
-      // } catch (e) {
-      //   reject(e);
-      // }
-    })
-
-  }
 
   resolveSemanticSource(url) {
     let formats = formatsCommon();
@@ -233,35 +162,37 @@ export default class httpCrud extends HTMLElement {
       }
     }
     this.publish('loading')
-    fetch(url, {
-        mode: 'cors',
-        method: this.attributesValues['method'],
-      })
-      .then(function(response) {
-        return response.json();
-      })
-      .then((data) => {
-        // console.log('FETCH result',data);
-        //this.data = data.data;
-        //this.renderTable();
-        //console.log(data);
-        // this.resolveSemanticContext(data['@context']).then(ontology => {
-        //   this.publish('ontology', ontology)
-        // })
-
-        if(this.ontologyTripleStore!=undefined){
-          this.ontologyTripleStore.resolveSemanticContext(data['@context']).then(webTripleStore=>{
-            this.publish('response', {data:data[this.attributesValues['data-path']],webTripleStore:this.ontologyTripleStore})
-          })
-        }else{
-            this.publish('response', {data:data[this.attributesValues['data-path']]})
-        }
-
+    if(this.semanticStorage==true){
+      this.webTripleStore.resolveSemanticSource(url).then(()=>{
+        let datas= this.webTripleStore.getALL({reduceSubject:true,flatToTree:this.flatToTree}).then((datas)=>{
+          console.log("datas",datas[0]['@graph']);
+          this.publish('response', {data:datas[0]['@graph'],webTripleStore:this.ontologyTripleStore});
+        });
 
       })
-      .catch(function(error) {
-        console.log('Request failed', error)
-      });
+    }else{
+      fetch(url, {
+          mode: 'cors',
+          method: this.attributesValues['method'],
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then((data) => {
+          if(this.ontologyTripleStore!=undefined){
+            this.ontologyTripleStore.resolveSemanticContext(data['@context']).then(webTripleStore=>{
+              this.publish('response', {data:data[this.attributesValues['data-path']],webTripleStore:this.ontologyTripleStore})
+            })
+          }else{
+              this.publish('response', {data:data[this.attributesValues['data-path']]})
+          }
+        })
+        .catch(function(error) {
+          console.log('Request failed', error)
+        });
+    }
+
+
     //console.log(url);
 
   }
@@ -275,29 +206,27 @@ export default class httpCrud extends HTMLElement {
     }
     //console.log(this.attributesValues);
     if (this.attributesValues['default-param'] != undefined) {
-      //console.log('default-read-many-param',this.attributesValues['default-read-many-param']);
-      //let defaultReadManyParamObject=eval(this.attributesValues['default-read-many-param'])
       this.defaultParamObject = JSON.parse(this.attributesValues['default-param']);
-      //console.log('defaultReadManyParamObject',defaultReadManyParamObject);
     }
     if (this.attributesValues['auto-fetch'] != undefined) {
       this.execute();
     }
+    if (this.attributesValues['semantic-storage'] != undefined) {
+      this.semanticStorage=true;
+      this.webTripleStore=new WebTripleStore();
+      // console.log("this.webTripleStore",this.webTripleStore);
+    }else{
+      this.semanticStorage=false;
+    }
+    if (this.attributesValues['flat-to-tree'] != undefined) {
+      this.flatToTree=true;
+      // console.log("this.webTripleStore",this.webTripleStore);
+    }else{
+      this.flatToTree=false;
+    }
     if(this.attributesValues['ontology-web-triple-store']!=undefined){
-      //let component = querySelectorDeep(this.attributesValues['ontology-web-triple-store']);
-      //console.log(this.attributesValues['ontology-web-triple-store'],component);
-      //this.ontologyWebTripleStore=component;
       this.findOntologyTripleStore(this.attributesValues['ontology-web-triple-store']);
     }
-    //console.log(this.attributesValues['ontology-we-triplestore']);
-
-
-
-    //console.log(this.attributesValues);
-    //this.urlReadMany = this.attributes.getNamedItem('urlReadMany').nodeValue;
-    //this.defaultReadManyParam = this.attributes.getNamedItem('defaultReadManyParam').nodeValue;
-    //this.urlReadOne = this.attributes.getNamedItem('urlReadOne').nodeValue;
-    //this.autoReadMany = this.attributes.getNamedItem('autoReadMany').nodeValue;
 
   }
   publish(message, data) {

@@ -1,0 +1,162 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "semviz": "http://semviz/ontology/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "schema": "http://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "package": "semviz:Package#",
+    "defaultSwitch": "semviz:DefaultSwitch#",
+    "configuration": "semviz:Configuration#",
+    "widgetFacet": "semviz:WidgetFacet#",
+    "specification": "semviz:Specification#",
+    "transiscope": "http://transiscope.org#",
+    "skos": "http://www.w3.org/2004/02/skos/core#"
+  },
+  "package:specifications": [{
+    "@id": "_:schema#name",
+    "specification:properties": [{
+      "@id": "schema:name"
+    }],
+    "rdf:label": "nom",
+    "specification:widget": {
+      "@id": "http://semviz/widget/shortText"
+    },
+    "Specification:widgetFacets": [{
+      "widgetFacet:attribut": "case",
+      "widgetFacet:value": "CapFist"
+    }]
+  }, {
+    "@id": "_:foaf#name",
+    "specification:properties": [{
+      "@id": "foaf:name"
+    }],
+    "rdf:label": "nom",
+    "specification:widget": {
+      "@id": "http://semviz/widget/shortText"
+    },
+    "specification:widgetFacets": [{
+      "widgetFacet:attribut": "case",
+      "widgetFacet:value": "CapFist"
+    }]
+  }, {
+    "@id": "_:schema#adress",
+    "specification:properties": [{
+      "@id": "schema:adress"
+    }],
+    "rdf:label": "adresse",
+    "specification:widget": {
+      "@id": "http://semviz/widget/adress"
+    },
+    "specification:widgetFacets": [{
+      "widgetFacet:attribut": "map-capture",
+      "widgetFacet:value": "yes"
+    }]
+  }],
+  "package:configurations": [{
+    "@id": "_:b1",
+    "rdf:label": "configuration pour les agent foaf et schema table et form",
+    "configuration:specifications": [{
+        "@id": "_:foaf#name"
+      }, {
+        "@id": "_:schema#name"
+      }, {
+        "@id": "_:schema#adress"
+      },
+      {
+        "specification:properties": [{
+          "@id": "schema:birthDate"
+        }],
+        "specification:widget": {
+          "@id": "http://semviz/widget/Date"
+        },
+        "specification:widgetFacets": [{
+          "WidgetFacet:attribut": "calendar-capture",
+          "WidgetFacet:value": "yes"
+        },{
+          "WidgetFacet:attribut": "label",
+          "WidgetFacet:value": "date de naissance"
+        }]
+      }
+    ]
+  }, {
+    "rdf:label": "configuration pour les arbres skos",
+    "configuration:specifications": [{
+      "specification:properties": [{
+        "@id": "skos:prefLabel"
+      }, {
+        "@id": "skos:broader"
+      }],
+      "specification:widget": {
+        "@id": "http://semviz/widget/TreeItem"
+      },
+      "specification:widgetFacets": [{
+        "widgetFacet:attribut": "label-property",
+        "widgetFacet:value": {
+          "@id": "skos:prefLabel"
+        }
+      }, {
+        "widgetFacet:attribut": "parent-property",
+        "widgetFacet:value": {
+          "@id": "skos:broader"
+        }
+      }]
+    }]
+  }],
+  "package:defaultSwitch": [{
+    "defaultSwitch:configuration": {
+      "rdf:label": "specifications la cartographie à partir POI transiscope",
+      "configuration:specifications": [{
+        "cpecification:properties": [{
+          "@id": "geo:lng"
+        }, {
+          "@id": "geo:lat"
+        }, {
+          "@id": "transiscope:concept"
+        }],
+        "specification:widget": {
+          "@id": "http://semviz/widget/mapMarcker"
+        },
+        "specification:widgetFacets": [{
+          "widgetFacet:attribut": "icon-property",
+          "widgetFacet:value": {
+            "@id": "transiscope:concept"
+          }
+        }, {
+          "widgetFacet:attribut": "icon-path",
+          "widgetFacet:value": "icon"
+        }]
+      }]
+    },
+    "defaultSwitch:class": [{
+      "@id": "transiscope:Alternativ"
+    }],
+    "defaultSwitch:component": [{
+      "@value": "map"
+    }]
+  }, {
+    "defaultSwitch:configuration": {
+      "@id": "_:b1"
+    },
+    "defaultSwitch:class": [{
+      "@id": "foaf:Person"
+    }],
+    "defaultSwitch:component": [{
+      "@value": "table"
+    }]
+  }, {
+    "defaultSwitch:configuration": {
+      "@id": "_:b1"
+    },
+    "defaultSwitch:class": [{
+      "@id": "schema:Person"
+    }],
+    "defaultSwitch:component": [{
+        "@value": "table"
+      },
+      {
+        "@value": "form"
+      }
+    ]
+  }]
+}

@@ -8,21 +8,15 @@ import {
   RdfXmlParser
 } from "rdfxml-streaming-parser";
 
-export default class webTripleStore extends HTMLElement {
+export default class WebTripleStoreLib{
   constructor() {
-    super();
+    //super();
     this.subscriptions = [];
     this.rdfExtDataset = RdfExt.dataset();
     this.formats = formatsCommon();
     this.cachedUrl = [];
   }
-  setChannel(channel) {
-    //console.log('Set Channel');
-    this.channel = channel;
 
-    // this.subscriptions.push(channel.subscribe("fetch", (data, envelope) => {
-    // }));
-  }
   resolveSemanticContext(context) {
     return new Promise((resolve, reject) => {
       try {
@@ -440,4 +434,3 @@ export default class webTripleStore extends HTMLElement {
 
 
 }
-window.customElements.define('web-triple-store', webTripleStore);
