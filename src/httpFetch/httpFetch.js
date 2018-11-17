@@ -32,113 +32,6 @@ export default class httpCrud extends HTMLElement {
   }
 
 
-  resolveSemanticSource(url) {
-    let formats = formatsCommon();
-    return new Promise((resolve, reject) => {
-      let corsUrl = 'https://cors-anywhere.herokuapp.com/' + url;
-      //console.log(corsUrl);
-      let contentType;
-      fetch(corsUrl, {
-          method: 'GET',
-          //mode: 'no-cors',
-          mode: 'cors',
-        })
-        .then((response) => {
-          //console.log('Ontology response', response);
-          //console.log('Content-Type',value,response.headers.get('Content-Type'));
-          let contentTypeFull = response.headers.get('Content-Type');
-          //let splitIndex = contentTypeFull.split(';')
-          contentType = contentTypeFull.split(';')[0];
-          return response.text();
-        })
-        .then((data) => {
-          //console.log('ALLO',contentType);
-          //console.log('Ontology response',value,contentType, data);
-          try {
-            let parser = formats.parsers[contentType];
-            let quads = [];
-            if (parser != undefined) {
-              //console.log('auto parser');
-              let quadStream = parser.import(stringToStream(data));
-              quadStream.on('data', (quad) => {
-                //console.log('tripleToQuad data',quad);
-              })
-              let serializerJsonLd = formats.serializers['application/ld+json'];
-              let jsonLdStream = serializerJsonLd.import(quadStream);
-              let jsonLdString = "";
-              jsonLdStream.on('data', (data) => {
-                jsonLdString = jsonLdString.concat(data);
-                // console.log('streamJsonLD data',JSON.parse(data));
-              }).on('end', () => {
-                let jsonLdObjet = JSON.parse(jsonLdString)
-                //console.log('JsonLd Ontology', value, contentType, jsonLdObjet);
-                resolve(jsonLdObjet);
-              }).on('error', (err) => {
-                //console.log('ERROR');
-                reject(err)
-              })
-            } else {
-              if (contentType == 'application/rdf+xml') {
-                //console.log('manual parser');
-                let RDFparser = new RdfXmlParser();
-                let tripleToQuad = new TripleToQuadTransform();
-                let serializerJsonLd = formats.serializers['application/ld+json'];
-                let jsonLdStream = serializerJsonLd.import(tripleToQuad);
-                let jsonLdString = "";
-                jsonLdStream.on('data', (data) => {
-                  jsonLdString = jsonLdString.concat(data);
-                  //console.log('streamJsonLD data', JSON.parse(data));
-                }).on('end', () => {
-                  let jsonLdObjet = JSON.parse(jsonLdString)
-                  //console.log('JsonLd Ontology', value, contentType, jsonLdObjet);
-                  resolve(jsonLdObjet);
-                }).on('error', (err) => {
-                  //console.log('ERROR',err);
-                  reject(err);
-                })
-
-                RDFparser.stream(data).on('data', (triple) => {
-                  let newTriple = {};
-                  let object = {};
-                  object.value = triple.object.nominalValue;
-                  if (triple.object.datatype != undefined) {
-                    object.datatype = {
-                      value: triple.object.datatype.nominalValue
-                    }
-                  }
-                  if (triple.object.language != undefined) {
-                    object.language = triple.language;
-                  }
-                  newTriple.object = object;
-                  newTriple.predicate = {
-                    value: triple.predicate.nominalValue
-                  };
-                  newTriple.subject = {
-                    value: triple.subject.nominalValue
-                  };
-                  //jsonLdString = jsonLdString.concat(data);
-                  // console.log('tripleToQuad triple',triple,newTriple);
-                  tripleToQuad.write(newTriple);
-                }).on('readable', () => {
-                  tripleToQuad.end();
-                })
-
-
-              } else {
-                //console.warn('No parser for contentType', value, contentType);
-                reject(new Error('No parser for contentType ' + contentType));
-              }
-            }
-          } catch (e) {
-            reject(e);
-          }
-        })
-        .catch(function(error) {
-          //console.error('Request failed', value, error);
-          reject('Request to ' + url + ' failed')
-        });
-    })
-  }
 
   execute(paramObjectIn) {
     //console.log('paramObjetIn',paramObjectIn);
@@ -162,15 +55,39 @@ export default class httpCrud extends HTMLElement {
       }
     }
     this.publish('loading')
-    if(this.semanticStorage==true){
-      this.webTripleStore.resolveSemanticSource(url).then(()=>{
-        let datas= this.webTripleStore.getALL({reduceSubject:true,flatToTree:this.flatToTree}).then((datas)=>{
-          console.log("datas",datas[0]['@graph']);
-          this.publish('response', {data:datas[0]['@graph'],webTripleStore:this.ontologyTripleStore});
-        });
+    if (this.semanticStorage == true) {
+      // console.log("this.webTripleStore", this.webTripleStore);
+      if (this.webTripleStore.resolve != undefined) {
+        this.webTripleStore.resolve(url
+            , {
+            reduceSubject: true,
+            flatToTree: this.flatToTree
+          }
+        ).then((datas) => {
+          //console.log("data", datas);
+          this.publish('response', {
+            data: datas[0]['@graph']
+          });
+          //console.log('PUTAIN');
+          // let datas = this.webTripleStore.getALL(url, {
+          //   reduceSubject: true,
+          //   flatToTree: this.flatToTree
+          // }).then((datas) => {
+          //   // this.ontologyTripleStore.resolveSemanticContext(data['@context']).then(()=>{
+          //   //   this.ontologyTripleStore.getAll((data)=>{
+          //   //     console.log("ontologyTripleStore",data);
+          //   //   })
+          //   // })
+          //   console.log("datas", datas[0]['@graph']);
+          //   this.publish('response', {
+          //     data: datas[0]['@graph'],
+          //     ontologyTripleStore: this.ontologyTripleStore
+          //   });
+          // });
+        })
+      }
 
-      })
-    }else{
+    } else {
       fetch(url, {
           mode: 'cors',
           method: this.attributesValues['method'],
@@ -179,12 +96,17 @@ export default class httpCrud extends HTMLElement {
           return response.json();
         })
         .then((data) => {
-          if(this.ontologyTripleStore!=undefined){
-            this.ontologyTripleStore.resolveSemanticContext(data['@context']).then(webTripleStore=>{
-              this.publish('response', {data:data[this.attributesValues['data-path']],webTripleStore:this.ontologyTripleStore})
+          if (this.ontologyTripleStore != undefined) {
+            this.ontologyTripleStore.resolveSemanticContext(data['@context']).then(webTripleStore => {
+              this.publish('response', {
+                data: data[this.attributesValues['data-path']],
+                ontologyTripleStore: this.ontologyTripleStore
+              })
             })
-          }else{
-              this.publish('response', {data:data[this.attributesValues['data-path']]})
+          } else {
+            this.publish('response', {
+              data: data[this.attributesValues['data-path']]
+            })
           }
         })
         .catch(function(error) {
@@ -212,19 +134,19 @@ export default class httpCrud extends HTMLElement {
       this.execute();
     }
     if (this.attributesValues['semantic-storage'] != undefined) {
-      this.semanticStorage=true;
-      this.webTripleStore=new WebTripleStore();
+      this.semanticStorage = true;
+      this.webTripleStore = new WebTripleStore();
       // console.log("this.webTripleStore",this.webTripleStore);
-    }else{
-      this.semanticStorage=false;
+    } else {
+      this.semanticStorage = false;
     }
     if (this.attributesValues['flat-to-tree'] != undefined) {
-      this.flatToTree=true;
+      this.flatToTree = true;
       // console.log("this.webTripleStore",this.webTripleStore);
-    }else{
-      this.flatToTree=false;
+    } else {
+      this.flatToTree = false;
     }
-    if(this.attributesValues['ontology-web-triple-store']!=undefined){
+    if (this.attributesValues['ontology-web-triple-store'] != undefined) {
       this.findOntologyTripleStore(this.attributesValues['ontology-web-triple-store']);
     }
 

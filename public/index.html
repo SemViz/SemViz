@@ -44,10 +44,11 @@
 
 
   <http-fetch id="alternatives-get-many" semantic-storage url="http://localhost:8080/data/api/PWA_Bounds?boundsJson={$.bounds}&concept={$.concept}" default-param='{"bounds":[{"_southWest":{"lat":44.49651,"lng":-2.55981},"_northEast":{"lat":47.86846,"lng":3.31787}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}},{"_southWest":{"lat":0,"lng":0},"_northEast":{"lat":0,"lng":0}}]}' method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
+    <!-- <http-fetch id="alternatives-get-many" semantic-storage url="http://localhost:8080/data/api/PWA_Bounds?concept={$.concept}" method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
   </http-fetch>
   <http-fetch id="alternatives-get-one" url="http://semantic-bus.org/data/api/PWA_One?id={$.@id}" method="GET" data-path="data">
-  </http-fetch>
-  <http-fetch id="taxonomy-get-many" semantic-storage url="http://semantic-bus.org/data/api/PWA_TAXO_NEW" method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
+  </http-fetch> -->
+  <http-fetch id="taxonomy-get-many" semantic-storage url="http://localhost:8080/data/api/PWA_TAXO_NEW" method="GET" data-path="@graph" ontology-web-triple-store="#ontology-web-triple-store">
   </http-fetch>
 
   <navigo-router id="router">

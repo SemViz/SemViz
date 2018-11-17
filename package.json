@@ -30,7 +30,6 @@
     "http-server": "^0.11.1",
     "qs": "^6.5.1",
     "rimraf": "^2.6.2"
-
   },
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^1.1.0",
@@ -39,6 +38,7 @@
     "navigo": "^7.1.2",
     "postal": "^2.0.5",
     "query-selector-shadow-dom": "0.0.7",
+    "rdf-dataset-simple": "^1.0.0",
     "rdf-ext": "^1.1.0",
     "rdf-formats-common": "^1.4.0",
     "rdf-parser-rdfxml": "^0.3.1",
